@@ -1,12 +1,13 @@
 import java.math.BigInteger;
 
 public class Main {
-
+	
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
 //		System.out.println(convertToDecimal(20));
 //		System.out.println(convertToHex(20));
-		System.out.println(hexToBin(23, 32));
+//		System.out.println(hexToBin(23, 32));
+		CPU myCPU = new CPU(2);
 	}
 
 	private static int convertToDecimal(int n){
