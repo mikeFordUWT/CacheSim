@@ -191,4 +191,11 @@ public class CPU {
  		}
 		scn.close();
 	}
+/**
+ * Created by Admin on 6/6/2016.
+ */
+
+    public int memoryRequest(int memoryAddress) {
+        return 0;
+    }
 }
