@@ -30,4 +30,10 @@ public class MemInstruct {
 	public int getData(){
 		return myDataAddress;
 	}
+	
+	@Override
+	public String toString(){
+		String toReturn = myInstructAdd+ ", " + myReadOrWrite + ", " + myDataAddress;
+		return toReturn;
+	}
 }

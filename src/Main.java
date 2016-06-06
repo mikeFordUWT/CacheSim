@@ -46,6 +46,10 @@ public class Main {
 		
 		System.out.println();
 		
+		PerformanceCounter pc = new PerformanceCounter();
+		
+		System.out.println(pc.printResults());
+		
 		
 		
 		
