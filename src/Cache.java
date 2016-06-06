@@ -3,6 +3,7 @@ import com.intellij.openapi.vcs.history.VcsRevisionNumber;
 import java.math.BigInteger;
 
 public class Cache {
+	
 	private CacheLine[] myCacheLines;
 	private final int myWays;
 	private final int myOffset;
