@@ -1,5 +1,6 @@
 
 public class Cache {
+	
 	private CacheLine[] myCacheLines;
 	
 	
