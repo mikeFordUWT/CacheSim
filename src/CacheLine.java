@@ -3,6 +3,8 @@
  */
 public class CacheLine {
 
+
+
 	private int myTag;
 	private int myState;
 	
