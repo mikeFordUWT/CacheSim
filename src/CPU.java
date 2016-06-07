@@ -191,4 +191,7 @@ public class CPU {
  		}
 		scn.close();
 	}
+
+	public void memoryRequest(int address) {
+	}
 }
