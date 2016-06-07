@@ -1,14 +1,16 @@
 import com.intellij.openapi.vcs.history.VcsRevisionNumber;
 
+import enums.MESI;
+
 import java.math.BigInteger;
+
 
 public class Cache {
 	
 	private CacheLine[] myCacheLines;
 	private final int myWays;
 	private final int myOffset;
-	private final int myReadLatency;
-	private final int myWriteLatency;
+	private final int myLatency;
 	private int mesiChanges;
 	private Cache myNextLevelCache;
 
@@ -16,11 +18,10 @@ public class Cache {
 	private CPU myCPU;
 	
 	
-	public Cache(int numOfEntries, int cacheLineSize, int numOfWays, int readLatency, int writeLatency, CPU cpu) {
+	public Cache(int numOfEntries, int cacheLineSize, int numOfWays, int latency, CPU cpu) {
 		mesiChanges = 0;
 		myCacheLines = new CacheLine[numOfEntries];
-		myReadLatency = readLatency;
-		myWriteLatency = writeLatency;
+		myLatency = latency;
 		myCPU = cpu;
 		for (int i = 0; i < myCacheLines.length; i++) {
 			myCacheLines[i] = new CacheLine(0, MESI.Invalid);

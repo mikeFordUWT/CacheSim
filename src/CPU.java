@@ -1,5 +1,9 @@
 import java.io.File;
+import java.util.ArrayList;
 import java.util.Scanner;
+
+import enums.MESI;
+import enums.WritePolicy;
 
 public class CPU {
 	
@@ -22,6 +26,8 @@ public class CPU {
 	private int Associativity = 1;
 	private WritePolicy Policy = WritePolicy.writeBack;
 	
+	private Cache L3;
+	
 	private Core[] myCores;
 	
 	public CPU(int numCores) {
@@ -35,8 +41,23 @@ public class CPU {
 	}
 	
 	private void instantiateCores() {
-		// TODO Auto-generated method stub
 		
+		L3 = new Cache(L3Size, CacheLineSize, Associativity, L3Latency, this);
+		
+		for(int i = 0; i < myCores.length; i++) {
+			
+			Cache theL1i = new Cache(L1Size, CacheLineSize, Associativity, L1Latency, this);
+			Cache theL1d = new Cache(L1Size, CacheLineSize, Associativity, L1Latency, this);
+			
+			Cache theL2 = new Cache(L2Size, CacheLineSize, Associativity, L2Latency, this);
+			
+			theL1i.setMyNextLevelCache(theL2);
+			theL1d.setMyNextLevelCache(theL2);
+			
+			theL2.setMyNextLevelCache(L3);
+			
+			myCores[i] = new Core(theL1i, theL1d, this);
+		}
 	}
 
 	private void readCFG() {
@@ -191,11 +212,21 @@ public class CPU {
  		}
 		scn.close();
 	}
+
+	public void Execute(ArrayList<MemInstruct> theProgam) {
+		
+		
+	}
 /**
  * Created by Admin on 6/6/2016.
  */
 
     public int memoryRequest(int memoryAddress) {
         return 0;
+    }
+    
+    public MESI findModifiedData(int theAddr, Core theCaller) {
+    	
+    	return MESI.Modified;
     }
 }
