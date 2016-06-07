@@ -79,16 +79,19 @@ public class PerformanceCounter {
 		sb.append(this.printStateChanges(MESI.Modified, MESI.Exclusive));
 		sb.append(this.printStateChanges(MESI.Modified, MESI.Shared));
 		sb.append(this.printStateChanges(MESI.Modified, MESI.Invalid));
+		sb.append("\n");
 		
 		//EXCLUSIVE
 		sb.append(this.printStateChanges(MESI.Exclusive, MESI.Modified));
 		sb.append(this.printStateChanges(MESI.Exclusive, MESI.Shared));
 		sb.append(this.printStateChanges(MESI.Exclusive, MESI.Invalid));
+		sb.append("\n");
 		
 		//SHARED
 		sb.append(this.printStateChanges(MESI.Shared, MESI.Modified));
 		sb.append(this.printStateChanges(MESI.Shared, MESI.Exclusive));
 		sb.append(this.printStateChanges(MESI.Shared, MESI.Invalid));
+		sb.append("\n");
 		
 		//INVALID
 		sb.append(this.printStateChanges(MESI.Invalid, MESI.Modified));
