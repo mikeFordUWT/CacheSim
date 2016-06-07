@@ -1,3 +1,4 @@
+import enums.MESI;
 
 public class PerformanceCounter {
 	
