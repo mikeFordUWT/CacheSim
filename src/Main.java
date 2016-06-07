@@ -9,42 +9,17 @@ public class Main {
 	public static void main(String[] args) throws FileNotFoundException {
 		/* SCAN IN 2K TRACE */
 		File twoK = new File("trace-2k.csv");
-		Scanner scan = new Scanner(twoK);
 		ArrayList<MemInstruct> instructs2K = new ArrayList<MemInstruct>();
-		while(scan.hasNext() ){
-			String line = scan.nextLine();
-			String[] instruct = line.split(",");
-			if(instruct.length>1 && !instruct[1].equals("")){
-//				System.out.println("Hello");
-//				System.out.println(line);
-				int first = Integer.parseInt(instruct[0]);
-				int second = Integer.parseInt(instruct[1]);
-				int third = Integer.parseInt(instruct[2]);
-				instructs2K.add(new MemInstruct(first, second, third));
-				
-			}
-
-		}
-		scan.close();
+		parseCSV(instructs2K, twoK);
 		
 		/* SCAN IN 5k trace*/
 		File fiveK = new File("trace-5k.csv");
-		Scanner scan2 = new Scanner(fiveK);
 		ArrayList<MemInstruct> instructs5K = new ArrayList<MemInstruct>();
-		while(scan2.hasNext()){
-			String line = scan2.nextLine();
-			String[] instruct = line.split(",");
-			if(instruct.length>1 && !instruct[1].equals("")){
-				int first = Integer.parseInt(instruct[0]);
-				int second = Integer.parseInt(instruct[1]);
-				int third = Integer.parseInt(instruct[2]);
-				instructs5K.add(new MemInstruct(first, second, third));
-			}
-			
-		}
-		scan2.close();
+		parseCSV(instructs5K, fiveK);
+
 		
-		
+		System.out.println(instructs5K.size());
+		System.out.println(instructs2K.size());
 		
 		PerformanceCounter pc = new PerformanceCounter();
 		
@@ -76,5 +51,27 @@ public class Main {
 		String toReturn = new BigInteger(s,16).toString(2);
 		String format = "%"+digits +"s";
 		return String.format(format, Integer.toBinaryString(n)).replace(' ', '0');
+	}
+	private static void parseCSV(ArrayList<MemInstruct> arrayList, File file){
+		try {
+			Scanner scan = new Scanner(file);
+			while(scan.hasNext() ){
+				String line = scan.nextLine();
+				String[] instruct = line.split(",");
+				if(instruct.length>1 && !instruct[1].equals("")){
+					int first = Integer.parseInt(instruct[0]);
+					int second = Integer.parseInt(instruct[1]);
+					int third = Integer.parseInt(instruct[2]);
+					arrayList.add(new MemInstruct(first, second, third));
+					
+				}
+
+			}
+			scan.close();
+			
+		} catch (FileNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 }
