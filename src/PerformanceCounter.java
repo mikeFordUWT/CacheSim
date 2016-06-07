@@ -5,6 +5,7 @@ public class PerformanceCounter {
 	private int myMisses;
 	private int myExecutionTime;
 	private int[][] myStateChanges;
+	private int myTotalStateChanges;
 	
 	
 	
@@ -16,6 +17,7 @@ public class PerformanceCounter {
 				myStateChanges[i][j] = 0;
 			}
 		}
+		myTotalStateChanges=0;
 		myHits = 0;
 		myMisses = 0;
 		myExecutionTime=0;
@@ -35,6 +37,7 @@ public class PerformanceCounter {
 	
 	public void stateChangeIncrement(MESI to, MESI from){
 		myStateChanges[to.ordinal()][from.ordinal()]++;
+		myTotalStateChanges++;
 	}
 	
 	public int getStateChangesTotal(MESI to, MESI from){
@@ -71,7 +74,7 @@ public class PerformanceCounter {
 	private String printAllStateChanges(){
 		StringBuilder sb = new StringBuilder();
 		
-		sb.append("STATE CHANGE TOTALS:\n");
+		sb.append("STATE CHANGE TOTALS:\n\n");
 		//MODIFY
 		sb.append(this.printStateChanges(MESI.Modified, MESI.Exclusive));
 		sb.append(this.printStateChanges(MESI.Modified, MESI.Shared));
@@ -102,8 +105,14 @@ public class PerformanceCounter {
 		return toReturn;
  	}
 	
+	private String printTotalStateChanges(){
+		String toReturn = "\nTOTAL STATE CHANGES: " + myTotalStateChanges;
+		return toReturn;
+	}
+	
 	public String printResults(){
-		String toReturn = printHits() + printMisses() + printExecutionTime() +"\n"+ printAllStateChanges();
+		String toReturn = "RESULTS:\n\n"+printHits() + printMisses() + printExecutionTime() +"\n"+ 
+				printAllStateChanges() + printTotalStateChanges();
 		return toReturn;
 		
 	}
