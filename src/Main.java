@@ -7,6 +7,7 @@ import java.util.Scanner;
 public class Main {
 
 	public static void main(String[] args) throws FileNotFoundException {
+		/* SCAN IN 2K TRACE */
 		File twoK = new File("trace-2k.csv");
 		Scanner scan = new Scanner(twoK);
 		ArrayList<MemInstruct> instructs2K = new ArrayList<MemInstruct>();
@@ -25,8 +26,8 @@ public class Main {
 
 		}
 		scan.close();
-		System.out.println(instructs2K.size());
 		
+		/* SCAN IN 5k trace*/
 		File fiveK = new File("trace-5k.csv");
 		Scanner scan2 = new Scanner(fiveK);
 		ArrayList<MemInstruct> instructs5K = new ArrayList<MemInstruct>();
@@ -42,11 +43,16 @@ public class Main {
 			
 		}
 		scan2.close();
-		System.out.println(instructs5K.size());
 		
-		System.out.println();
+		
 		
 		PerformanceCounter pc = new PerformanceCounter();
+		pc.increaseExecutionTime(100);
+		pc.incrementHits();
+		pc.incrementHits();
+		pc.stateChangeIncrement(MESI.Exclusive, MESI.Invalid);
+		//TODO Code for everything else goes here.
+		
 		
 		System.out.println(pc.printResults());
 		
