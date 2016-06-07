@@ -3,13 +3,15 @@
  */
 public class CacheLine {
 
+
+
 	private int myTag;
-	private int myState;
+	private MESI myState;
 	
 	/*
 	 * Constructor 
 	 */
-	public CacheLine(int tag, int state){
+	public CacheLine(int tag, MESI state){
 		myTag = tag;
 		myState = state;
 	}
@@ -19,7 +21,7 @@ public class CacheLine {
 		return myTag;
 	}
 	
-	public int getState(){
+	public MESI getState(){
 		return myState;
 	}
 	
