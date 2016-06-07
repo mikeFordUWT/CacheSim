@@ -1,5 +1,3 @@
-import com.intellij.openapi.vcs.history.VcsRevisionNumber;
-
 import java.math.BigInteger;
 
 public class Cache {
