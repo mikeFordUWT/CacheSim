@@ -1,18 +1,23 @@
 import java.math.BigInteger;
 
+import enums.MESI;
+
+
 public class Cache {
-	
+
 	private CacheLine[] myCacheLines;
 	private final int myWays;
 	private final int myOffset;
 	private final int myLatency;
+	private int mesiChanges;
 	private Cache myNextLevelCache;
 	//cpu is the handler for the shared bus since a shared bus exists on the
 	private CPU myCPU;
 	
 	
 	public Cache(int numOfEntries, int cacheLineSize, int numOfWays, int latency, CPU cpu) {
-		myCacheLines = new CacheLine[numOfEntries];
+		mesiChanges = 0;
+	    myCacheLines = new CacheLine[numOfEntries];
 		myLatency = latency;
 		myCPU = cpu;
 		for (int i = 0; i < myCacheLines.length; i++) {
@@ -30,6 +35,7 @@ public class Cache {
 	/**
 	 *
 	 * @param address The Address we are checking for in the cache.
+	 * @return returns true if the address is found.
      */
 	public void addressSearch(int address, boolean read) {
 		int latencyPenalty = myLatency;

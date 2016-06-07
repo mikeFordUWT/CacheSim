@@ -1,3 +1,5 @@
+import enums.MESI;
+
 /*
  * An object the represents a Cache line
  */
