@@ -47,10 +47,8 @@ public class Main {
 		
 		
 		PerformanceCounter pc = new PerformanceCounter();
-		pc.increaseExecutionTime(100);
-		pc.incrementHits();
-		pc.incrementHits();
-		pc.stateChangeIncrement(MESI.Exclusive, MESI.Invalid);
+		
+		
 		//TODO Code for everything else goes here.
 		
 		
