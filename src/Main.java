@@ -11,23 +11,21 @@ public class Main {
 		File twoK = new File("trace-2k.csv");
 		ArrayList<MemInstruct> instructs2K = new ArrayList<MemInstruct>();
 		parseCSV(instructs2K, twoK);
+		PerformanceCounter pc2K = new PerformanceCounter();
+		
 		
 		/* SCAN IN 5k trace*/
 		File fiveK = new File("trace-5k.csv");
 		ArrayList<MemInstruct> instructs5K = new ArrayList<MemInstruct>();
 		parseCSV(instructs5K, fiveK);
-
 		
-		System.out.println(instructs5K.size());
-		System.out.println(instructs2K.size());
-		
-		PerformanceCounter pc = new PerformanceCounter();
+		PerformanceCounter pc5K = new PerformanceCounter();
 		
 		
 		//TODO Code for everything else goes here.
 		
 		
-		System.out.println(pc.printResults());
+		
 		
 		
 		
