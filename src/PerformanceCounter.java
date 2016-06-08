@@ -1,3 +1,4 @@
+import enums.CacheLevel;
 import enums.MESI;
 
 public class PerformanceCounter {
@@ -62,12 +63,36 @@ public class PerformanceCounter {
 		return "L3 Misses: " + myL3Misses + "\n";
 	}
 
-	public void incrementMisses(){
+	public void incrementMisses(CacheLevel lvl){
 		myMisses++;
+		
+		switch (lvl) {
+		case L1:
+			myL1Misses++;
+			break;
+		case L2:
+			myL2Misses++;
+			break;
+		case L3:
+			myL3Misses++;
+			break;
+		}
 	}
 	
-	public void incrementHits(){
+	public void incrementHits(CacheLevel lvl){
 		myHits++;
+		
+		switch (lvl) {
+		case L1:
+			myL1Hits++;
+			break;
+		case L2:
+			myL2Hits++;
+			break;
+		case L3:
+			myL3Hits++;
+			break;
+		}
 	}
 	
 	public void increaseExecutionTime(int n){

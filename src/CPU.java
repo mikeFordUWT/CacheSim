@@ -2,6 +2,7 @@ import java.io.File;
 import java.util.List;
 import java.util.Scanner;
 
+import enums.CacheLevel;
 import enums.MESI;
 import enums.WritePolicy;
 
@@ -46,14 +47,14 @@ public class CPU {
 
 	private void instantiateCores() {
 
-		L3 = new Cache(L3Size, CacheLineSize, Associativity, L3Latency, this);
+		L3 = new Cache(L3Size, CacheLineSize, Associativity, L3Latency, this, CacheLevel.L3);
 
 		for(int i = 0; i < myCores.length; i++) {
 
-			Cache theL1i = new Cache(L1Size, CacheLineSize, Associativity, L1Latency, this);
-			Cache theL1d = new Cache(L1Size, CacheLineSize, Associativity, L1Latency, this);
+			Cache theL1i = new Cache(L1Size, CacheLineSize, Associativity, L1Latency, this, CacheLevel.L1);
+			Cache theL1d = new Cache(L1Size, CacheLineSize, Associativity, L1Latency, this, CacheLevel.L1);
 
-			Cache theL2 = new Cache(L2Size, CacheLineSize, Associativity, L2Latency, this);
+			Cache theL2 = new Cache(L2Size, CacheLineSize, Associativity, L2Latency, this, CacheLevel.L2);
 
 			theL1i.setMyNextLevelCache(theL2);
 			theL1d.setMyNextLevelCache(theL2);
@@ -268,14 +269,14 @@ public class CPU {
 		}
 
 		if (l1Hit) {
-			myPerformanceCounter.incrementHits();
+			myPerformanceCounter.incrementHits(CacheLevel.L1);
 			if (writeBack) {
 				needsToWrite.myL1D.cacheLineWriteBack(memoryAddress, true);
 			}
 			myPerformanceCounter.increaseExecutionTime(L1Latency);
 		} else if (l2Hit) {
-			myPerformanceCounter.incrementHits();
-			myPerformanceCounter.incrementMisses();
+			myPerformanceCounter.incrementHits(CacheLevel.L2);
+			myPerformanceCounter.incrementMisses(CacheLevel.L2);
 			myPerformanceCounter.increaseExecutionTime(L2Latency + L1Latency);
 		} else {
 			readFromMemory(memoryAddress);
