@@ -9,16 +9,16 @@ public class Cache {
 	private final int myWays;
 	private final int myOffset;
 	private final int myLatency;
-	private int mesiChanges;
-	private Cache myNextLevelCache;
+	public Cache myNextLevelCache;
+	private PerformanceCounter myPerformanceCounter;
 	//cpu is the handler for the shared bus since a shared bus exists on the
 	private CPU myCPU;
 	
 	
 	public Cache(int numOfEntries, int cacheLineSize, int numOfWays, int latency, CPU cpu) {
-		mesiChanges = 0;
 	    myCacheLines = new CacheLine[numOfEntries];
 		myLatency = latency;
+		myPerformanceCounter = cpu.getPerformanceCounter();
 		myCPU = cpu;
 		for (int i = 0; i < myCacheLines.length; i++) {
 			myCacheLines[i] = new CacheLine(0, MESI.Invalid);
@@ -35,21 +35,49 @@ public class Cache {
 	/**
 	 *
 	 * @param address The Address we are checking for in the cache.
-	 * @return returns true if the address is found.
      */
-	public void addressSearch(int address, boolean read) {
-		int latencyPenalty = myLatency;
+	public void addressSearch(int address, Core caller) {
+		myPerformanceCounter.increaseExecutionTime(myLatency);
 		MESI found = hasAddress(address);
 		if (found == MESI.Invalid) {
+			myPerformanceCounter.incrementMisses();
 			if (myNextLevelCache != null) {
-				myNextLevelCache.addressSearch(address, read);
+				myNextLevelCache.addressSearch(address, caller);
 			} else {
-				myCPU.memoryRequest(address);
+				myCPU.memoryRequest(address, caller);
 			}
+			this.loadCacheLine(address);
+		} else {
+			myPerformanceCounter.incrementHits();
 		}
 	}
 
-	private MESI hasAddress(int address) {
+	private void loadCacheLine(int address) {
+		address = address >> myOffset;
+		int sets = myCacheLines.length / myWays;
+		int idx = (int) (Math.log(sets) / Math.log(2));
+		StringBuilder bitMask = new StringBuilder();
+		for (int i = 0; i < idx; i++) {
+			bitMask.append("1");
+		}
+		int mask = Integer.parseInt(bitMask.toString(), 2);
+		idx = address & mask;
+		int tag = ~mask & address;
+		CacheLine lru = myCacheLines[idx];
+		for (int i = idx; i < idx + myWays; i++) {
+			if (lru.myLastAccess > myCacheLines[i].myLastAccess) {
+				lru = myCacheLines[i];
+			}
+		}
+		if (lru.getState() == MESI.Modified) {
+			myCPU.writeBack();
+			myPerformanceCounter.stateChangeIncrement(MESI.Shared, MESI.Modified);
+		}
+		lru.setMyTag(tag);
+		lru.setMyState(MESI.Shared);
+	}
+
+	public MESI hasAddress(int address) {
 		MESI rtn = MESI.Invalid;
 		address = address >> myOffset;
 		int sets = myCacheLines.length / myWays;
@@ -67,6 +95,64 @@ public class Cache {
 			}
 		}
 		return rtn;
+	}
+
+	public void cacheLineWriteBack(int address) {
+		address = address >> myOffset;
+		int sets = myCacheLines.length / myWays;
+		int idx = (int) (Math.log(sets) / Math.log(2));
+		StringBuilder bitMask = new StringBuilder();
+		for (int i = 0; i < idx; i++) {
+			bitMask.append("1");
+		}
+		int mask = Integer.parseInt(bitMask.toString(), 2);
+		idx = address & mask;
+		int tag = ~mask & address;
+		for (int i = idx; i < idx + myWays; i++) {
+			if (myCacheLines[i].getTag() == tag) {
+				myPerformanceCounter.stateChangeIncrement(MESI.Shared, myCacheLines[i].getState());
+				myCacheLines[i].setMyState(MESI.Shared);
+			}
+		}
+		myCPU.writeBack();
+	}
+
+	protected void writeToCacheLine(int address) {
+		address = address >> myOffset;
+		int sets = myCacheLines.length / myWays;
+		int idx = (int) (Math.log(sets) / Math.log(2));
+		StringBuilder bitMask = new StringBuilder();
+		for (int i = 0; i < idx; i++) {
+			bitMask.append("1");
+		}
+		int mask = Integer.parseInt(bitMask.toString(), 2);
+		idx = address & mask;
+		int tag = ~mask & address;
+		for (int i = idx; i < idx + myWays; i++) {
+			if (myCacheLines[i].getTag() == tag) {
+				myPerformanceCounter.stateChangeIncrement(MESI.Modified, myCacheLines[i].getState());
+				myCacheLines[i].setMyState(MESI.Modified);
+			}
+		}
+	}
+
+	public void invalidateCacheLine(int address) {
+		address = address >> myOffset;
+		int sets = myCacheLines.length / myWays;
+		int idx = (int) (Math.log(sets) / Math.log(2));
+		StringBuilder bitMask = new StringBuilder();
+		for (int i = 0; i < idx; i++) {
+			bitMask.append("1");
+		}
+		int mask = Integer.parseInt(bitMask.toString(), 2);
+		idx = address & mask;
+		int tag = ~mask & address;
+		for (int i = idx; i < idx + myWays; i++) {
+			if (myCacheLines[i].getTag() == tag) {
+				myPerformanceCounter.stateChangeIncrement(MESI.Invalid, myCacheLines[i].getState());
+				myCacheLines[i].setMyState(MESI.Invalid);
+			}
+		}
 	}
 
 

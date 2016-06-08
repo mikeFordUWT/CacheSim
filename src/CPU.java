@@ -1,12 +1,10 @@
 import java.io.File;
-import java.util.ArrayList;
+import java.util.List;
 import java.util.Scanner;
 
 import enums.MESI;
 import enums.WritePolicy;
 
-import java.io.File;
-import java.util.Scanner;
 
 public class CPU {
 
@@ -31,14 +29,17 @@ public class CPU {
 
 	private Cache L3;
 
-	private Core[] myCores;
+	private List<MemInstruct> myQueue;
 
-	public CPU(int numCores) {
+	private Core[] myCores;
+	private PerformanceCounter myPerformanceCounter;
+
+	public CPU(int numCores, PerformanceCounter pc) {
 		if(numCores < 1) {
 			throw new IllegalArgumentException("Cannot have less than one cores.");
 		}
 		myCores = new Core[numCores];
-
+		myPerformanceCounter =  pc;
 		readCFG();
 		instantiateCores();
 	}
@@ -216,20 +217,78 @@ public class CPU {
 		scn.close();
 	}
 
-	public void Execute(ArrayList<MemInstruct> theProgam) {
-
-
+	public void queueUp(List<MemInstruct> instructions) {
+		myQueue = instructions;
+		for (Core c : myCores) {
+			c.queueUp(myQueue);
+		}
 	}
-/**
- * Created by Admin on 6/6/2016.
- */
 
-    public int memoryRequest(int memoryAddress) {
-        return 0;
+	public void invalidateCacheLines(int address, Core caller) {
+		L3.invalidateCacheLine(address);
+		for (Core c : myCores) {
+			if (c != caller) c.invalidate(address);
+		}
+	}
+
+	public void executeLines(int numOfIntructions, int cpuNumber) {
+		for (int i = 0; i < numOfIntructions; i++) {
+			Core c = myCores[cpuNumber];
+			c.executeLine();
+		}
+	}
+
+    public void memoryRequest(int memoryAddress, Core caller) {
+		//snoop
+		boolean l1Hit = false;
+		boolean l2Hit = false;
+		boolean writeBack = false;
+		Core needsToWrite = null;
+		for (Core c : myCores) {
+			if (!(c == caller)) {
+				MESI state = c.myL1D.hasAddress(memoryAddress);
+				if (state != MESI.Invalid) {
+					l1Hit = true;
+					if (state == MESI.Modified) {
+						writeBack = true;
+						needsToWrite = c;
+					}
+				} else {
+					state = c.myL1I.hasAddress(memoryAddress);
+					if (state != MESI.Invalid) {
+						l1Hit = true;
+					} else {
+						state = c.myL1D.myNextLevelCache.hasAddress(memoryAddress);
+						if (state != MESI.Invalid) {
+							l2Hit = true;
+						}
+					}
+				}
+			}
+		}
+
+		if (l1Hit) {
+			myPerformanceCounter.incrementHits();
+			if (writeBack) {
+				needsToWrite.myL1D.cacheLineWriteBack(memoryAddress);
+			}
+			myPerformanceCounter.increaseExecutionTime(L1Latency);
+		} else if (l2Hit) {
+			myPerformanceCounter.incrementHits();
+			myPerformanceCounter.incrementMisses();
+			myPerformanceCounter.increaseExecutionTime(L2Latency + L1Latency);
+		} else {
+			// TODO: add memory access latency
+		}
+
     }
 
-    public MESI findModifiedData(int theAddr, Core theCaller) {
+	public PerformanceCounter getPerformanceCounter() {
 
-    	return MESI.Modified;
-    }
+		return myPerformanceCounter;
+	}
+
+	public void writeBack() {
+		//TODO: add latency for a write.
+	}
 }

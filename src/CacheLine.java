@@ -5,10 +5,9 @@ import enums.MESI;
  */
 public class CacheLine {
 
-
-
 	private int myTag;
 	private MESI myState;
+	public int myLastAccess;
 	
 	/*
 	 * Constructor 
@@ -16,8 +15,16 @@ public class CacheLine {
 	public CacheLine(int tag, MESI state){
 		myTag = tag;
 		myState = state;
+		myLastAccess = 0;
 	}
-	
+
+	public void setMyState(MESI myState) {
+		this.myState = myState;
+	}
+
+	public void setMyTag(int myTag) {
+		this.myTag = myTag;
+	}
 	
 	public int getTag(){
 		return myTag;
