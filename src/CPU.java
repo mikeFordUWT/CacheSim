@@ -288,7 +288,19 @@ public class CPU {
 		return myPerformanceCounter;
 	}
 
-	public void writeBack() {
-		//TODO: add latency for a write.
+	public void writeBack(int theAddr) {
+		
+		if(theAddr > -1 && theAddr <= L1MSize) {
+			myPerformanceCounter.increaseExecutionTime(L1MLatency);
+		} else if (theAddr > L1MSize && theAddr <= L2MSize) {
+			myPerformanceCounter.increaseExecutionTime(L2MWriteLatency);
+		}
+	}
+	public void readFromMemory(int theAddr) {
+		if(theAddr > -1 && theAddr <= L1MSize) {
+			myPerformanceCounter.increaseExecutionTime(L1MLatency);
+		} else if (theAddr > L1MSize && theAddr <= L2MSize) {
+			myPerformanceCounter.increaseExecutionTime(L2MReadLatency);
+		}
 	}
 }
