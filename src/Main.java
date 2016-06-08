@@ -24,7 +24,8 @@ public class Main {
 		
 		//TODO Code for everything else goes here.
 		
-		
+		String hello = pc5K.printResults();
+		System.out.println(hello);
 		
 		
 		
