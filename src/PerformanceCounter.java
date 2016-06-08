@@ -37,12 +37,12 @@ public class PerformanceCounter {
 	}
 	
 	public void stateChangeIncrement(MESI to, MESI from){
-		myStateChanges[to.ordinal()][from.ordinal()]++;
+		myStateChanges[from.ordinal()][to.ordinal()]++;
 		myTotalStateChanges++;
 	}
 	
 	public int getStateChangesTotal(MESI to, MESI from){
-		return myStateChanges[to.ordinal()][from.ordinal()];
+		return myStateChanges[from.ordinal()][to.ordinal()];
 	}
 	
 	public int getHits(){
@@ -67,8 +67,8 @@ public class PerformanceCounter {
 		return toReturn;
 	}
 	
-	private String printStateChanges(MESI to, MESI from){
-		String toReturn = to + " to " + from + ": " + getStateChangesTotal(to, from) + "\n";
+	private String printStateChanges(MESI from, MESI to){
+		String toReturn = from + " to " + to + ": " + getStateChangesTotal(to, from) + "\n";
 		return toReturn;
 	}
 	

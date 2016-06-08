@@ -1,5 +1,3 @@
-import java.math.BigInteger;
-
 import enums.MESI;
 
 
@@ -52,7 +50,8 @@ public class Cache {
 		}
 	}
 
-	private void loadCacheLine(int address) {
+	private void loadCacheLine(int theAddress) {
+		int address = theAddress;
 		address = address >> myOffset;
 		int sets = myCacheLines.length / myWays;
 		int idx = (int) (Math.log(sets) / Math.log(2));
@@ -69,11 +68,15 @@ public class Cache {
 				lru = myCacheLines[i];
 			}
 		}
+		lru.setMyTag(tag);
 		if (lru.getState() == MESI.Modified) {
 			myCPU.writeBack();
+			cacheLineWriteBack(theAddress, false);
+		} else {
+			lru.myLastAccess = System.currentTimeMillis();
+			lru.setMyState(MESI.Shared);
 		}
-		lru.setMyTag(tag);
-		lru.setMyState(MESI.Shared);
+
 	}
 
 	public MESI hasAddress(int address) {
@@ -91,12 +94,16 @@ public class Cache {
 		for (int i = idx; i < idx + myWays; i++) {
 			if (myCacheLines[i].getTag() == tag) {
 				rtn = myCacheLines[i].getState();
+				if (rtn != MESI.Invalid) {
+					myCacheLines[i].myLastAccess = System.currentTimeMillis();
+				}
 			}
 		}
 		return rtn;
 	}
 
-	public void cacheLineWriteBack(int address) {
+	public void cacheLineWriteBack(int theAddress, boolean invalidate) {
+		int address = theAddress;
 		address = address >> myOffset;
 		int sets = myCacheLines.length / myWays;
 		int idx = (int) (Math.log(sets) / Math.log(2));
@@ -109,14 +116,21 @@ public class Cache {
 		int tag = ~mask & address;
 		for (int i = idx; i < idx + myWays; i++) {
 			if (myCacheLines[i].getTag() == tag) {
-				myPerformanceCounter.stateChangeIncrement(MESI.Shared, myCacheLines[i].getState());
-				myCacheLines[i].setMyState(MESI.Shared);
+				if (invalidate) {
+					myPerformanceCounter.stateChangeIncrement(MESI.Invalid, myCacheLines[i].getState());
+					myCacheLines[i].setMyState(MESI.Invalid);
+				} else {
+					myPerformanceCounter.stateChangeIncrement(MESI.Shared, myCacheLines[i].getState());
+					myCacheLines[i].setMyState(MESI.Shared);
+					myCacheLines[i].myLastAccess = System.currentTimeMillis();
+				}
 			}
 		}
 		myCPU.writeBack();
 	}
 
-	protected void writeToCacheLine(int address) {
+	protected void writeToCacheLine(int theAddress) {
+		int address = theAddress;
 		address = address >> myOffset;
 		int sets = myCacheLines.length / myWays;
 		int idx = (int) (Math.log(sets) / Math.log(2));
@@ -131,11 +145,13 @@ public class Cache {
 			if (myCacheLines[i].getTag() == tag) {
 				myPerformanceCounter.stateChangeIncrement(MESI.Modified, myCacheLines[i].getState());
 				myCacheLines[i].setMyState(MESI.Modified);
+				myCacheLines[i].myLastAccess = System.currentTimeMillis();
 			}
 		}
 	}
 
-	public void invalidateCacheLine(int address) {
+	public void invalidateCacheLine(int theAddress) {
+		int address = theAddress;
 		address = address >> myOffset;
 		int sets = myCacheLines.length / myWays;
 		int idx = (int) (Math.log(sets) / Math.log(2));

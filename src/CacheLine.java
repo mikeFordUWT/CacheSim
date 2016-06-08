@@ -7,7 +7,7 @@ public class CacheLine {
 
 	private int myTag;
 	private MESI myState;
-	public int myLastAccess;
+	public long myLastAccess;
 	
 	/*
 	 * Constructor 

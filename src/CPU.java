@@ -270,7 +270,7 @@ public class CPU {
 		if (l1Hit) {
 			myPerformanceCounter.incrementHits();
 			if (writeBack) {
-				needsToWrite.myL1D.cacheLineWriteBack(memoryAddress);
+				needsToWrite.myL1D.cacheLineWriteBack(memoryAddress, true);
 			}
 			myPerformanceCounter.increaseExecutionTime(L1Latency);
 		} else if (l2Hit) {
