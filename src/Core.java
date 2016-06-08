@@ -18,14 +18,16 @@ public class Core {
 	//cache.writeToCacheLine()  then call cpu.invalidateAddress then call myL1D.nextlevelcache.invalidate(address).
 
 	public void executeLine() {
-		MemInstruct current = myQueue.get(instructIdx);
-		instructIdx++;
-		myL1I.addressSearch(current.getInstruction(), this);
-		myL1D.addressSearch(current.getData(), this);
-		if (current.getReadOrWrite() > 0) {
-			myL1D.writeToCacheLine(current.getData());
-			myL1D.myNextLevelCache.invalidateCacheLine(current.getData());
-			myCPU.invalidateCacheLines(current.getData(), this);
+		if (instructIdx < myQueue.size()) {
+			MemInstruct current = myQueue.get(instructIdx);
+			instructIdx++;
+			myL1I.addressSearch(current.getInstruction(), this);
+			if (current.getData() >= 0) myL1D.addressSearch(current.getData(), this);
+			if (current.getReadOrWrite() > 0) {
+				myL1D.writeToCacheLine(current.getData());
+				myL1D.myNextLevelCache.invalidateCacheLine(current.getData());
+				myCPU.invalidateCacheLines(current.getData(), this);
+			}
 		}
 	}
 

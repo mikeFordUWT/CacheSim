@@ -71,7 +71,6 @@ public class Cache {
 		}
 		if (lru.getState() == MESI.Modified) {
 			myCPU.writeBack();
-			myPerformanceCounter.stateChangeIncrement(MESI.Shared, MESI.Modified);
 		}
 		lru.setMyTag(tag);
 		lru.setMyState(MESI.Shared);
@@ -148,7 +147,7 @@ public class Cache {
 		idx = address & mask;
 		int tag = ~mask & address;
 		for (int i = idx; i < idx + myWays; i++) {
-			if (myCacheLines[i].getTag() == tag) {
+			if (myCacheLines[i].getTag() == tag && myCacheLines[i].getState() != MESI.Invalid) {
 				myPerformanceCounter.stateChangeIncrement(MESI.Invalid, myCacheLines[i].getState());
 				myCacheLines[i].setMyState(MESI.Invalid);
 			}
