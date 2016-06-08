@@ -17,10 +17,6 @@ public class Main {
 		ArrayList<MemInstruct> instructs5K = new ArrayList<MemInstruct>();
 		parseCSV(instructs5K, fiveK);
 
-		
-		System.out.println(instructs5K.size());
-		System.out.println(instructs2K.size());
-		
 		PerformanceCounter pc = new PerformanceCounter();
 
 		CPU cpu = new CPU(2, pc);

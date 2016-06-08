@@ -1,8 +1,10 @@
+import enums.CacheLevel;
 import enums.MESI;
 
 
 public class Cache {
 
+	private final CacheLevel myCacheLevel;
 	private CacheLine[] myCacheLines;
 	private final int myWays;
 	private final int myOffset;
@@ -13,11 +15,12 @@ public class Cache {
 	private CPU myCPU;
 	
 	
-	public Cache(int numOfEntries, int cacheLineSize, int numOfWays, int latency, CPU cpu) {
+	public Cache(int numOfEntries, int cacheLineSize, int numOfWays, int latency, CPU cpu, CacheLevel level) {
 	    myCacheLines = new CacheLine[numOfEntries];
 		myLatency = latency;
 		myPerformanceCounter = cpu.getPerformanceCounter();
 		myCPU = cpu;
+		myCacheLevel = level;
 		for (int i = 0; i < myCacheLines.length; i++) {
 			myCacheLines[i] = new CacheLine(0, MESI.Invalid);
 		}
@@ -70,7 +73,7 @@ public class Cache {
 		}
 		lru.setMyTag(tag);
 		if (lru.getState() == MESI.Modified) {
-			myCPU.writeBack();
+			myCPU.writeBack(theAddress);
 			cacheLineWriteBack(theAddress, false);
 		} else {
 			lru.myLastAccess = System.currentTimeMillis();
@@ -126,7 +129,7 @@ public class Cache {
 				}
 			}
 		}
-		myCPU.writeBack();
+		myCPU.writeBack(theAddress);
 	}
 
 	protected void writeToCacheLine(int theAddress) {

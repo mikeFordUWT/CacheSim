@@ -278,7 +278,7 @@ public class CPU {
 			myPerformanceCounter.incrementMisses();
 			myPerformanceCounter.increaseExecutionTime(L2Latency + L1Latency);
 		} else {
-			// TODO: add memory access latency
+			readFromMemory(memoryAddress);
 		}
 
     }

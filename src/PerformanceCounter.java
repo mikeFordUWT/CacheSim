@@ -7,10 +7,19 @@ public class PerformanceCounter {
 	private int myExecutionTime;
 	private int[][] myStateChanges;
 	private int myTotalStateChanges;
-	
-	
-	
-	
+
+	private int myL1Hits;
+	private int myL2Hits;
+	private int myL3Hits;
+
+	private int myL1Misses;
+	private int myL2Misses;
+	private int myL3Misses;
+
+
+
+
+
 	public PerformanceCounter(){
 		myStateChanges = new int[4][4];
 		for(int i = 0; i<myStateChanges.length; i++){
@@ -22,8 +31,37 @@ public class PerformanceCounter {
 		myHits = 0;
 		myMisses = 0;
 		myExecutionTime=0;
+		myL1Hits = 0;
+		myL1Misses = 0;
+		myL2Hits = 0;
+		myL2Misses=0;
+		myL3Hits = 0;
+		myL3Misses =0;
 	}
-	
+	private String printL1Hits(){
+		return "L1 Hits: " + myL1Hits +"\n";
+	}
+
+	private String printL2Hits(){
+		return "L2 Hits: " + myL2Hits + "\n";
+	}
+
+	private String printL3Hits(){
+		return "L3 Hits: " + myL3Hits + "\n";
+	}
+
+	private String printL1Misses(){
+		return "L1 Misses: " + myL1Misses + "\n";
+	}
+
+	private String printL2Misses(){
+		return "L2 Misses: " + myL2Misses + "\n";
+	}
+
+	private String printL3Misses(){
+		return "L3 Misses: " + myL3Misses + "\n";
+	}
+
 	public void incrementMisses(){
 		myMisses++;
 	}
@@ -71,39 +109,26 @@ public class PerformanceCounter {
 		String toReturn = from + " to " + to + ": " + getStateChangesTotal(to, from) + "\n";
 		return toReturn;
 	}
-	
+
 	private String printAllStateChanges(){
 		StringBuilder sb = new StringBuilder();
-		
+
 		sb.append("STATE CHANGE TOTALS:\n\n");
 		//MODIFY
-		sb.append(this.printStateChanges(MESI.Modified, MESI.Exclusive));
 		sb.append(this.printStateChanges(MESI.Modified, MESI.Shared));
 		sb.append(this.printStateChanges(MESI.Modified, MESI.Invalid));
 		sb.append("\n");
-		
-		//EXCLUSIVE
-		sb.append(this.printStateChanges(MESI.Exclusive, MESI.Modified));
-		sb.append(this.printStateChanges(MESI.Exclusive, MESI.Shared));
-		sb.append(this.printStateChanges(MESI.Exclusive, MESI.Invalid));
-		sb.append("\n");
-		
+
 		//SHARED
 		sb.append(this.printStateChanges(MESI.Shared, MESI.Modified));
-		sb.append(this.printStateChanges(MESI.Shared, MESI.Exclusive));
 		sb.append(this.printStateChanges(MESI.Shared, MESI.Invalid));
-		sb.append("\n");
-		
-		//INVALID
-		sb.append(this.printStateChanges(MESI.Invalid, MESI.Modified));
-		sb.append(this.printStateChanges(MESI.Invalid, MESI.Exclusive));
-		sb.append(this.printStateChanges(MESI.Invalid, MESI.Shared));
-		
+
 		//return this
 		return sb.toString();
-		
+
 	}
-	
+
+
 	private String printExecutionTime(){
 		String toReturn = "EXECUTION TIME: "+ myExecutionTime + " ns\n";
 		return toReturn;
@@ -113,12 +138,14 @@ public class PerformanceCounter {
 		String toReturn = "\nTOTAL STATE CHANGES: " + myTotalStateChanges;
 		return toReturn;
 	}
-	
+
 	public String printResults(){
-		String toReturn = "RESULTS:\n\n"+printHits() + printMisses() + printExecutionTime() +"\n"+ 
+		String toReturn = "RESULTS:\n\n" + printExecutionTime() + "\n"  +
+				printL1Hits() + printL2Hits() + printL3Hits() + printHits()+"\n"
+				+ printL1Misses() + printL2Misses() + printL3Misses() +printMisses()+"\n"+
 				printAllStateChanges() + printTotalStateChanges();
 		return toReturn;
-		
+
 	}
 	
 }
