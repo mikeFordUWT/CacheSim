@@ -41,7 +41,7 @@ public class Cache {
 		myPerformanceCounter.increaseExecutionTime(myLatency);
 		MESI found = hasAddress(address);
 		if (found == MESI.Invalid) {
-			myPerformanceCounter.incrementMisses();
+			myPerformanceCounter.incrementMisses(myCacheLevel);
 			if (myNextLevelCache != null) {
 				myNextLevelCache.addressSearch(address, caller);
 			} else {
@@ -49,7 +49,7 @@ public class Cache {
 			}
 			this.loadCacheLine(address);
 		} else {
-			myPerformanceCounter.incrementHits();
+			myPerformanceCounter.incrementHits(myCacheLevel);
 		}
 	}
 
