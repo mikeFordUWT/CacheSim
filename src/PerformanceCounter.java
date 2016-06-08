@@ -164,11 +164,40 @@ public class PerformanceCounter {
 		return toReturn;
 	}
 
+	private String printHitRate(){
+		int misses =myMisses;
+		if(misses == 0){
+			misses = 1;
+		}
+		double hitRate = ((double) myHits/(myHits + misses));
+		return "HIT RATE: "+(hitRate * 100) + "%\n";
+	}
+
+	private String printMissRate(){
+		int misses = myMisses;
+		if(misses == 0){
+			misses = 1;
+		}
+
+		double missRate = ((double) myMisses/(myHits + misses));
+		return "MISS RATE: " + (missRate * 100) + "%\n";
+	}
+
 	public String printResults(){
-		String toReturn = "RESULTS:\n\n" + printExecutionTime() + "\n"  +
-				printL1Hits() + printL2Hits() + printL3Hits() + printHits()+"\n"
-				+ printL1Misses() + printL2Misses() + printL3Misses() +printMisses()+"\n"+
-				printAllStateChanges() + printTotalStateChanges();
+		String toReturn = "RESULTS:\n\n"
+				+ printExecutionTime() + "\n"
+				+ printL1Hits()
+				+ printL2Hits()
+				+ printL3Hits()
+				+ printHits()
+				+ printHitRate() + "\n"
+				+ printL1Misses()
+				+ printL2Misses()
+				+ printL3Misses()
+				+printMisses()
+				+printMissRate() + "\n"
+				+ printAllStateChanges()
+				+ printTotalStateChanges();
 		return toReturn;
 
 	}

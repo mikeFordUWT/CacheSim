@@ -12,25 +12,35 @@ public class Main {
 		ArrayList<MemInstruct> instructs2K = new ArrayList<MemInstruct>();
 		parseCSV(instructs2K, twoK);
 
+		PerformanceCounter pc = new PerformanceCounter();
+		CPU cpu = new CPU(2, pc);
+
+		cpu.queueUp(instructs2K);
+		cpu.executeLines(50,0);
+		for (int i = 0; i < instructs2K.size(); i++) {
+			cpu.executeLines(1,0);
+			cpu.executeLines(1,1);
+		}
+		System.out.println("Trace 2k");
+		System.out.println(pc.printResults());
+		System.out.println("\n\n");
+
 		/* SCAN IN 5k trace*/
 		File fiveK = new File("trace-5k.csv");
 		ArrayList<MemInstruct> instructs5K = new ArrayList<MemInstruct>();
 		parseCSV(instructs5K, fiveK);
 
-		PerformanceCounter pc = new PerformanceCounter();
-
-		CPU cpu = new CPU(2, pc);
+		pc = new PerformanceCounter();
+		cpu = new CPU(2, pc);
 
 		cpu.queueUp(instructs5K);
 		cpu.executeLines(50,0);
-		for (int i = 0; i < 5000; i++) {
+		for (int i = 0; i < instructs5K.size(); i++) {
 			cpu.executeLines(1,0);
 			cpu.executeLines(1,1);
 		}
-		
-		//TODO Code for everything else goes here.
-		
-		
+
+		System.out.println("Trace 5k");
 		System.out.println(pc.printResults());
 
 		

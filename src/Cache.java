@@ -59,6 +59,7 @@ public class Cache {
 		int sets = myCacheLines.length / myWays;
 		int idx = (int) (Math.log(sets) / Math.log(2));
 		StringBuilder bitMask = new StringBuilder();
+		bitMask.append("0");
 		for (int i = 0; i < idx; i++) {
 			bitMask.append("1");
 		}
@@ -88,6 +89,7 @@ public class Cache {
 		int sets = myCacheLines.length / myWays;
 		int idx = (int) (Math.log(sets) / Math.log(2));
 		StringBuilder bitMask = new StringBuilder();
+		bitMask.append("0");
 		for (int i = 0; i < idx; i++) {
 			bitMask.append("1");
 		}
@@ -111,6 +113,7 @@ public class Cache {
 		int sets = myCacheLines.length / myWays;
 		int idx = (int) (Math.log(sets) / Math.log(2));
 		StringBuilder bitMask = new StringBuilder();
+		bitMask.append("0");
 		for (int i = 0; i < idx; i++) {
 			bitMask.append("1");
 		}
@@ -138,6 +141,7 @@ public class Cache {
 		int sets = myCacheLines.length / myWays;
 		int idx = (int) (Math.log(sets) / Math.log(2));
 		StringBuilder bitMask = new StringBuilder();
+		bitMask.append("0");
 		for (int i = 0; i < idx; i++) {
 			bitMask.append("1");
 		}
@@ -159,6 +163,7 @@ public class Cache {
 		int sets = myCacheLines.length / myWays;
 		int idx = (int) (Math.log(sets) / Math.log(2));
 		StringBuilder bitMask = new StringBuilder();
+		bitMask.append("0");
 		for (int i = 0; i < idx; i++) {
 			bitMask.append("1");
 		}

@@ -47,15 +47,27 @@ public class CPU {
 
 	private void instantiateCores() {
 
-		L3 = new Cache(L3Size, CacheLineSize, Associativity, L3Latency, this, CacheLevel.L3);
-
+		if (Associativity > 0) {
+			L3 = new Cache(L3Size, CacheLineSize, Associativity, L3Latency, this, CacheLevel.L3);
+		} else {
+			L3 = new Cache(L3Size, CacheLineSize, L3Size, L3Latency, this, CacheLevel.L3);
+		}
 		for(int i = 0; i < myCores.length; i++) {
+			Cache theL1i = null;
+			Cache theL1d = null;
+			Cache theL2 = null;
 
-			Cache theL1i = new Cache(L1Size, CacheLineSize, Associativity, L1Latency, this, CacheLevel.L1);
-			Cache theL1d = new Cache(L1Size, CacheLineSize, Associativity, L1Latency, this, CacheLevel.L1);
+			if(Associativity > 0) {
+				theL1i = new Cache(L1Size, CacheLineSize, Associativity, L1Latency, this, CacheLevel.L1);
+				theL1d = new Cache(L1Size, CacheLineSize, Associativity, L1Latency, this, CacheLevel.L1);
 
-			Cache theL2 = new Cache(L2Size, CacheLineSize, Associativity, L2Latency, this, CacheLevel.L2);
+				theL2 = new Cache(L2Size, CacheLineSize, Associativity, L2Latency, this, CacheLevel.L2);
+			} else {
+				theL1i = new Cache(L1Size, CacheLineSize, L1Size, L1Latency, this, CacheLevel.L1);
+				theL1d = new Cache(L1Size, CacheLineSize, L1Size, L1Latency, this, CacheLevel.L1);
 
+				theL2 = new Cache(L2Size, CacheLineSize, L2Size, L2Latency, this, CacheLevel.L2);
+			}
 			theL1i.setMyNextLevelCache(theL2);
 			theL1d.setMyNextLevelCache(theL2);
 
